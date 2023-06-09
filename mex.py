@@ -1,11 +1,12 @@
 # -*- coding: utf-8 -*-
 import bpy
+import re
 
 bl_info = {
     "name"    : "MEX",
     "category": "3D View",
     "location": "",
-    "version" : (0,1,0),
+    "version" : (0,2,0),
     "blender" : (3,0,0),
     "author"  : "arch4e"
 }
@@ -38,6 +39,36 @@ class OpsShapeKeyMoveToSelect(bpy.types.Operator):
 
         return {'FINISHED'}
 
+class OpsShapeKeyBindWithPrefix(bpy.types.Operator):
+    bl_idname = 'mex.sk_bind_with_prefix'
+    bl_label  = 'Bind With Prefix'
+
+    def execute(self, context):
+        bind_shape_key(context)        
+
+        return {'FINISHED'}
+
+def bind_shape_key(context):
+    key_blocks = context.active_object.data.shape_keys.key_blocks
+    prefix_end = {}
+
+    for key_name in [shape_key.name for shape_key in key_blocks]:
+        prefix = re.split(r'\.|_', key_name, 1)[0] # <prefix>_<shape key name>
+        # update value if prefix is new or contiguous
+        if not prefix in prefix_end.keys() \
+           or prefix == re.split(r'\.|_', key_blocks[key_blocks.find(key_name) - 1].name, 1)[0]:
+            prefix_end[prefix] = key_blocks.find(key_name)
+
+        while key_blocks.find(key_name) >= (prefix_end[prefix] + 2):
+            bpy.context.object.active_shape_key_index = key_blocks.find(key_name)
+            bpy.ops.object.shape_key_move(type='UP')
+            if key_blocks.find(key_name) <= (prefix_end[prefix] + 1):
+                prefix_end[prefix] += 1
+                break
+
+        print(key_blocks.keys())
+        print('')
+
 #
 # Menu
 #
@@ -56,10 +87,12 @@ def sk_exmenu(self, context):
     layout = self.layout
     layout.separator()
     layout.menu('OBJECT_MT_mex_sk_move_to_select', text='Move: to Select')
+    layout.operator('mex.sk_bind_with_prefix', text='Bind With Prefix')
 
 classes = [
     MenuShapeKeyMoveToSelect,
-    OpsShapeKeyMoveToSelect
+    OpsShapeKeyMoveToSelect,
+    OpsShapeKeyBindWithPrefix
 ]
 
 def register():
