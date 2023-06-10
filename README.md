@@ -9,3 +9,7 @@ Blender Menu Extention
   * `Edit >> Preferences >> Add-ons >> Install`
 * Enable `3D View: MEX`
 
+## License
+
+MIT
+
