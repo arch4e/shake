@@ -62,12 +62,12 @@ def bind_shape_key(context):
         while key_blocks.find(key_name) >= (prefix_end[prefix] + 2):
             bpy.context.object.active_shape_key_index = key_blocks.find(key_name)
             bpy.ops.object.shape_key_move(type='UP')
+            # update prefix_end when the move is complete
             if key_blocks.find(key_name) <= (prefix_end[prefix] + 1):
-                prefix_end[prefix] += 1
-                break
-
-        print(key_blocks.keys())
-        print('')
+                # update all prefix_end after the target prefix
+                for p in prefix_end.keys():
+                    if prefix_end[p] >= prefix_end[prefix]:
+                        prefix_end[p] += 1
 
 #
 # Menu
