@@ -3,20 +3,20 @@ import bpy
 import re
 
 bl_info = {
-    "name"    : "MEX",
-    "category": "3D View",
-    "location": "",
-    "version" : (0,2,0),
-    "blender" : (3,0,0),
-    "author"  : "arch4e"
+    'name'    : 'MEX',
+    'category': '3D View',
+    'location': '',
+    'version' : (1,0,0),
+    'blender' : (3,0,0),
+    'author'  : 'arch4e'
 }
 
 #
 # Operator
 #
-class OpsShapeKeyMoveToSelect(bpy.types.Operator):
-    bl_idname = 'mex.sk_move_to_select'
-    bl_label  = 'Move Shape Key: to Select'
+class OpsShapeKeyMoveBelowSelect(bpy.types.Operator):
+    bl_idname = 'mex.sk_move_below_selected'
+    bl_label  = 'Move Active Shape Key Below Selected Shape Key'
 
     target: bpy.props.StringProperty()
 
@@ -39,60 +39,57 @@ class OpsShapeKeyMoveToSelect(bpy.types.Operator):
 
         return {'FINISHED'}
 
-class OpsShapeKeyBindWithPrefix(bpy.types.Operator):
-    bl_idname = 'mex.sk_bind_with_prefix'
-    bl_label  = 'Bind With Prefix'
+class OpsShapeKeyAlignByPrefix(bpy.types.Operator):
+    bl_idname = 'mex.sk_align_by_prefix'
+    bl_label  = 'Align by prefix'
 
     def execute(self, context):
-        bind_shape_key(context)        
+        key_blocks = context.active_object.data.shape_keys.key_blocks
+        prefix_end = {}
+
+        for key_name in [shape_key.name for shape_key in key_blocks]:
+            prefix = re.split(r'\.|_', key_name, 1)[0] # <prefix>_<shape key name>
+            # update value if prefix is new or contiguous
+            if not prefix in prefix_end.keys() \
+               or prefix == re.split(r'\.|_', key_blocks[key_blocks.find(key_name) - 1].name, 1)[0]:
+                prefix_end[prefix] = key_blocks.find(key_name)
+
+            while key_blocks.find(key_name) >= (prefix_end[prefix] + 2):
+                bpy.context.object.active_shape_key_index = key_blocks.find(key_name)
+                bpy.ops.object.shape_key_move(type='UP')
+                # update prefix_end when the move is complete
+                if key_blocks.find(key_name) <= (prefix_end[prefix] + 1):
+                    # update all prefix_end after the target prefix
+                    for p in prefix_end.keys():
+                        if prefix_end[p] >= prefix_end[prefix]:
+                            prefix_end[p] += 1
 
         return {'FINISHED'}
-
-def bind_shape_key(context):
-    key_blocks = context.active_object.data.shape_keys.key_blocks
-    prefix_end = {}
-
-    for key_name in [shape_key.name for shape_key in key_blocks]:
-        prefix = re.split(r'\.|_', key_name, 1)[0] # <prefix>_<shape key name>
-        # update value if prefix is new or contiguous
-        if not prefix in prefix_end.keys() \
-           or prefix == re.split(r'\.|_', key_blocks[key_blocks.find(key_name) - 1].name, 1)[0]:
-            prefix_end[prefix] = key_blocks.find(key_name)
-
-        while key_blocks.find(key_name) >= (prefix_end[prefix] + 2):
-            bpy.context.object.active_shape_key_index = key_blocks.find(key_name)
-            bpy.ops.object.shape_key_move(type='UP')
-            # update prefix_end when the move is complete
-            if key_blocks.find(key_name) <= (prefix_end[prefix] + 1):
-                # update all prefix_end after the target prefix
-                for p in prefix_end.keys():
-                    if prefix_end[p] >= prefix_end[prefix]:
-                        prefix_end[p] += 1
 
 #
 # Menu
 #
-class MenuShapeKeyMoveToSelect(bpy.types.Menu):
-    bl_idname = 'OBJECT_MT_mex_sk_move_to_select'
-    bl_label  = 'Move Shape Key: to Select'
+class MenuShapeKeyMoveBelowSelect(bpy.types.Menu):
+    bl_idname = 'OBJECT_MT_mex_sk_move_below_selected'
+    bl_label  = 'Move Shape Key'
 
     def draw(self, context):
         layout     = self.layout
         shape_keys = context.active_object.data.shape_keys
         if hasattr(shape_keys, 'key_blocks'):
             for name, _ in list(shape_keys.key_blocks.items()):
-                layout.operator('mex.sk_move_to_select', text=name).target = name
+                layout.operator('mex.sk_move_below_selected', text=name).target = name
 
 def sk_exmenu(self, context):
     layout = self.layout
     layout.separator()
-    layout.menu('OBJECT_MT_mex_sk_move_to_select', text='Move: to Select')
-    layout.operator('mex.sk_bind_with_prefix', text='Bind With Prefix')
+    layout.menu('OBJECT_MT_mex_sk_move_below_selected', text='Move Shape Key')
+    layout.operator('mex.sk_align_by_prefix', text='Align by Prefix')
 
 classes = [
-    MenuShapeKeyMoveToSelect,
-    OpsShapeKeyMoveToSelect,
-    OpsShapeKeyBindWithPrefix
+    MenuShapeKeyMoveBelowSelect,
+    OpsShapeKeyMoveBelowSelect,
+    OpsShapeKeyAlignByPrefix
 ]
 
 def register():
