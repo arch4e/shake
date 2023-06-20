@@ -3,7 +3,7 @@ import bpy
 import re
 
 bl_info = {
-    'name'    : 'MEX',
+    'name'    : 'SHA-KE Tools',
     'category': '3D View',
     'location': '',
     'version' : (1,0,0),
@@ -15,7 +15,7 @@ bl_info = {
 # Operator
 #
 class OpsShapeKeyMoveBelowSelect(bpy.types.Operator):
-    bl_idname = 'mex.sk_move_below_selected'
+    bl_idname = 'shake_tools.move_below_selected'
     bl_label  = 'Move Active Shape Key Below Selected Shape Key'
 
     target: bpy.props.StringProperty()
@@ -40,7 +40,7 @@ class OpsShapeKeyMoveBelowSelect(bpy.types.Operator):
         return {'FINISHED'}
 
 class OpsShapeKeyAlignByPrefix(bpy.types.Operator):
-    bl_idname = 'mex.sk_align_by_prefix'
+    bl_idname = 'shake_tools.align_by_prefix'
     bl_label  = 'Align by prefix'
 
     def execute(self, context):
@@ -70,7 +70,7 @@ class OpsShapeKeyAlignByPrefix(bpy.types.Operator):
 # Menu
 #
 class MenuShapeKeyMoveBelowSelect(bpy.types.Menu):
-    bl_idname = 'OBJECT_MT_mex_sk_move_below_selected'
+    bl_idname = 'OBJECT_MT_shake_tools_move_below_selected'
     bl_label  = 'Move Shape Key'
 
     def draw(self, context):
@@ -78,13 +78,13 @@ class MenuShapeKeyMoveBelowSelect(bpy.types.Menu):
         shape_keys = context.active_object.data.shape_keys
         if hasattr(shape_keys, 'key_blocks'):
             for name, _ in list(shape_keys.key_blocks.items()):
-                layout.operator('mex.sk_move_below_selected', text=name).target = name
+                layout.operator('shake_tools.move_below_selected', text=name).target = name
 
 def sk_exmenu(self, context):
     layout = self.layout
     layout.separator()
-    layout.menu('OBJECT_MT_mex_sk_move_below_selected', text='Move Shape Key')
-    layout.operator('mex.sk_align_by_prefix', text='Align by Prefix')
+    layout.menu('OBJECT_MT_shake_tools_move_below_selected', text='Move Shape Key')
+    layout.operator('shake_tools.align_by_prefix', text='Align by Prefix')
 
 classes = [
     MenuShapeKeyMoveBelowSelect,
