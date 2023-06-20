@@ -2,6 +2,8 @@
 import bpy
 import re
 
+from .ui.context_menu_extention import MenuShapeKeyMoveBelowSelect, extended_menu
+
 bl_info = {
     'name'    : 'SHA-KE Tools',
     'category': '3D View',
@@ -66,26 +68,6 @@ class OpsShapeKeyAlignByPrefix(bpy.types.Operator):
 
         return {'FINISHED'}
 
-#
-# Menu
-#
-class MenuShapeKeyMoveBelowSelect(bpy.types.Menu):
-    bl_idname = 'OBJECT_MT_shake_tools_move_below_selected'
-    bl_label  = 'Move Shape Key'
-
-    def draw(self, context):
-        layout     = self.layout
-        shape_keys = context.active_object.data.shape_keys
-        if hasattr(shape_keys, 'key_blocks'):
-            for name, _ in list(shape_keys.key_blocks.items()):
-                layout.operator('shake_tools.move_below_selected', text=name).target = name
-
-def sk_exmenu(self, context):
-    layout = self.layout
-    layout.separator()
-    layout.menu('OBJECT_MT_shake_tools_move_below_selected', text='Move Shape Key')
-    layout.operator('shake_tools.align_by_prefix', text='Align by Prefix')
-
 classes = [
     MenuShapeKeyMoveBelowSelect,
     OpsShapeKeyMoveBelowSelect,
@@ -95,12 +77,12 @@ classes = [
 def register():
     for cls in classes:
         bpy.utils.register_class(cls)
-    bpy.types.MESH_MT_shape_key_context_menu.append(sk_exmenu)
+    bpy.types.MESH_MT_shape_key_context_menu.append(extended_menu)
 
 def unregister():
     for cls in classes:
         bpy.utils.unregister_class(cls)
-    bpy.types.MESH_MT_shape_key_context_menu.remove(sk_exmenu)
+    bpy.types.MESH_MT_shape_key_context_menu.remove(extended_menu)
 
 if __name__ == '__main__':
     register()
