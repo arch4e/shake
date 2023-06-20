@@ -5,7 +5,7 @@ from .operator.context_menu_extention import ShapeKeyMoveBelowSelect, ShapeKeyAl
 from .ui.context_menu_extention import MenuShapeKeyMoveBelowSelect, extended_menu
 
 bl_info = {
-    'name'    : 'SHA-KE Tools',
+    'name'    : 'ShaKU',
     'category': '3D View',
     'location': '',
     'version' : (1,0,0),

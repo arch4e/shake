@@ -2,7 +2,7 @@ import bpy
 import re
 
 class ShapeKeyMoveBelowSelect(bpy.types.Operator):
-    bl_idname = 'shake_tools.move_below_selected'
+    bl_idname = 'shaku.move_below_selected'
     bl_label  = 'Move Active Shape Key Below Selected Shape Key'
 
     target: bpy.props.StringProperty()
@@ -27,7 +27,7 @@ class ShapeKeyMoveBelowSelect(bpy.types.Operator):
         return {'FINISHED'}
 
 class ShapeKeyAlignByPrefix(bpy.types.Operator):
-    bl_idname = 'shake_tools.align_by_prefix'
+    bl_idname = 'shaku.align_by_prefix'
     bl_label  = 'Align by prefix'
 
     def execute(self, context):
