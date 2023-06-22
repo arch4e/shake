@@ -1,7 +1,7 @@
 import bpy
 
 from .common import BasePanel
-from ..operator.transcribe import destination_objects, target_shape_keys
+from ..operator.transcribe import destination_objects, selected_shape_keys
 
 
 class TranscribePanel(BasePanel, bpy.types.Panel):
@@ -36,7 +36,7 @@ class TranscribePanel(BasePanel, bpy.types.Panel):
                     row = tbox.row()
                     row.alignment = 'LEFT'
                     row.operator('shaku.select_shape_keys',
-                                 icon='CHECKBOX_HLT' if shape_key_name in target_shape_keys else 'CHECKBOX_DEHLT',
+                                 icon='CHECKBOX_HLT' if shape_key_name in selected_shape_keys else 'CHECKBOX_DEHLT',
                                  text=f'{shape_key_name}',
                                  emboss=False).shape_key_name = shape_key_name
         else:
@@ -45,7 +45,7 @@ class TranscribePanel(BasePanel, bpy.types.Panel):
                     row = tbox.row()
                     row.alignment = 'LEFT'
                     row.operator('shaku.select_shape_keys',
-                                 icon='CHECKBOX_HLT' if shape_key_name in target_shape_keys else 'CHECKBOX_DEHLT',
+                                 icon='CHECKBOX_HLT' if shape_key_name in selected_shape_keys else 'CHECKBOX_DEHLT',
                                  text=f'{shape_key_name}',
                                  emboss=False).shape_key_name = shape_key_name
             else:

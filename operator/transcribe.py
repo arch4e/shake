@@ -1,7 +1,7 @@
 import bpy
 
 destination_objects = []
-target_shape_keys   = []
+selected_shape_keys = []
 
 
 class SelectShapeKeys(bpy.types.Operator):
@@ -11,10 +11,10 @@ class SelectShapeKeys(bpy.types.Operator):
     shape_key_name: bpy.props.StringProperty()
 
     def execute(self, context):
-        if self.shape_key_name in target_shape_keys:
-            target_shape_keys.remove(self.shape_key_name)
+        if self.shape_key_name in selected_shape_keys:
+            selected_shape_keys.remove(self.shape_key_name)
         else:
-            target_shape_keys.append(self.shape_key_name)
+            selected_shape_keys.append(self.shape_key_name)
 
         return { 'FINISHED' }
 
@@ -47,13 +47,25 @@ class TranscribeShapeKeys(bpy.types.Operator):
                 if _object.data.shape_keys is None:
                     _object.shape_key_add(name='Basis', from_mix=False)
 
+                # Exclude non-existent shapekeys
+                # >>> Switching objects after selecting a shapekey also transfers the shapekey of another object.
+                if not context.scene.shaku_transcribe.select_mode_all_sk:
+                    existing_shape_keys = bpy.data.objects[
+                        context.scene.shaku_transcribe.source
+                    ].data.shape_keys.key_blocks.keys()
+                    target_shape_keys = list(
+                        set(selected_shape_keys) & set(existing_shape_keys)
+                    )
+                else:
+                    target_shape_keys = selected_shape_keys
+
                 # Add Shape Keys
                 for shape_key_name in target_shape_keys:
                     if shape_key_name not in _object.data.shape_keys.key_blocks.keys():
                         _object.shape_key_add(name=shape_key_name)
 
             destination_objects.clear()
-            target_shape_keys.clear()
+            selected_shape_keys.clear()
 
             return { 'FINISHED' }
 
