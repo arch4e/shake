@@ -1,21 +1,9 @@
-# -*- coding: utf-8 -*-
 import bpy
 import re
 
-bl_info = {
-    'name'    : 'MEX',
-    'category': '3D View',
-    'location': '',
-    'version' : (1,0,0),
-    'blender' : (3,0,0),
-    'author'  : 'arch4e'
-}
 
-#
-# Operator
-#
-class OpsShapeKeyMoveBelowSelect(bpy.types.Operator):
-    bl_idname = 'mex.sk_move_below_selected'
+class ShapeKeyMoveBelowSelect(bpy.types.Operator):
+    bl_idname = 'shaku.move_below_selected'
     bl_label  = 'Move Active Shape Key Below Selected Shape Key'
 
     target: bpy.props.StringProperty()
@@ -39,8 +27,9 @@ class OpsShapeKeyMoveBelowSelect(bpy.types.Operator):
 
         return {'FINISHED'}
 
-class OpsShapeKeyAlignByPrefix(bpy.types.Operator):
-    bl_idname = 'mex.sk_align_by_prefix'
+
+class ShapeKeyAlignByPrefix(bpy.types.Operator):
+    bl_idname = 'shaku.align_by_prefix'
     bl_label  = 'Align by prefix'
 
     def execute(self, context):
@@ -50,7 +39,7 @@ class OpsShapeKeyAlignByPrefix(bpy.types.Operator):
         for key_name in [shape_key.name for shape_key in key_blocks]:
             prefix = re.split(r'\.|_', key_name, 1)[0] # <prefix>_<shape key name>
             # update value if prefix is new or contiguous
-            if not prefix in prefix_end.keys() \
+            if prefix not in prefix_end.keys() \
                or prefix == re.split(r'\.|_', key_blocks[key_blocks.find(key_name) - 1].name, 1)[0]:
                 prefix_end[prefix] = key_blocks.find(key_name)
 
@@ -65,43 +54,4 @@ class OpsShapeKeyAlignByPrefix(bpy.types.Operator):
                             prefix_end[p] += 1
 
         return {'FINISHED'}
-
-#
-# Menu
-#
-class MenuShapeKeyMoveBelowSelect(bpy.types.Menu):
-    bl_idname = 'OBJECT_MT_mex_sk_move_below_selected'
-    bl_label  = 'Move Shape Key'
-
-    def draw(self, context):
-        layout     = self.layout
-        shape_keys = context.active_object.data.shape_keys
-        if hasattr(shape_keys, 'key_blocks'):
-            for name, _ in list(shape_keys.key_blocks.items()):
-                layout.operator('mex.sk_move_below_selected', text=name).target = name
-
-def sk_exmenu(self, context):
-    layout = self.layout
-    layout.separator()
-    layout.menu('OBJECT_MT_mex_sk_move_below_selected', text='Move Shape Key')
-    layout.operator('mex.sk_align_by_prefix', text='Align by Prefix')
-
-classes = [
-    MenuShapeKeyMoveBelowSelect,
-    OpsShapeKeyMoveBelowSelect,
-    OpsShapeKeyAlignByPrefix
-]
-
-def register():
-    for cls in classes:
-        bpy.utils.register_class(cls)
-    bpy.types.MESH_MT_shape_key_context_menu.append(sk_exmenu)
-
-def unregister():
-    for cls in classes:
-        bpy.utils.unregister_class(cls)
-    bpy.types.MESH_MT_shape_key_context_menu.remove(sk_exmenu)
-
-if __name__ == '__main__':
-    register()
 
