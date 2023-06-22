@@ -30,17 +30,20 @@ classes = [
     TranscribeProps
 ]
 
+
 def register():
     for cls in classes:
         bpy.utils.register_class(cls)
     bpy.types.MESH_MT_shape_key_context_menu.append(extended_menu)
     props_register()
 
+
 def unregister():
     for cls in classes:
         bpy.utils.unregister_class(cls)
     bpy.types.MESH_MT_shape_key_context_menu.remove(extended_menu)
     props_unregister()
+
 
 if __name__ == '__main__':
     register()

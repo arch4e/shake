@@ -8,6 +8,7 @@ properties = {
     }
 }
 
+
 def register():
     for _type, data in properties.items():
         for attr, prop in data.items():
@@ -18,6 +19,7 @@ def register():
                 setattr(_type, attr, prop)
             except Exception as e:
                 print(e)
+
 
 def unregister():
     for _type, data in properties.items():

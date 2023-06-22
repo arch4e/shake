@@ -3,6 +3,7 @@ import bpy
 destination_objects = []
 target_shape_keys   = []
 
+
 class SelectShapeKeys(bpy.types.Operator):
     bl_idname = 'shaku.select_shape_keys'
     bl_label  = 'Select Shape Keys'
@@ -17,6 +18,7 @@ class SelectShapeKeys(bpy.types.Operator):
 
         return { 'FINISHED' }
 
+
 class SelectDestination(bpy.types.Operator):
     bl_idname = 'shaku.select_destination_objects'
     bl_label  = 'Select Destination'
@@ -30,6 +32,7 @@ class SelectDestination(bpy.types.Operator):
             destination_objects.append(self.object_name)
 
         return { 'FINISHED' }
+
 
 class TranscribeShapeKeys(bpy.types.Operator):
     bl_idname = 'shaku.transcribe_shape_keys'
@@ -46,7 +49,7 @@ class TranscribeShapeKeys(bpy.types.Operator):
 
                 # Add Shape Keys
                 for shape_key_name in target_shape_keys:
-                    if not shape_key_name in _object.data.shape_keys.key_blocks.keys():
+                    if shape_key_name not in _object.data.shape_keys.key_blocks.keys():
                         _object.shape_key_add(name=shape_key_name)
 
             destination_objects.clear()
@@ -57,4 +60,4 @@ class TranscribeShapeKeys(bpy.types.Operator):
         except Exception as e:
             print(e)
             return { 'CANCELLED' }
- 
+

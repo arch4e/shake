@@ -1,6 +1,7 @@
 import bpy
 import re
 
+
 class ShapeKeyMoveBelowSelect(bpy.types.Operator):
     bl_idname = 'shaku.move_below_selected'
     bl_label  = 'Move Active Shape Key Below Selected Shape Key'
@@ -26,6 +27,7 @@ class ShapeKeyMoveBelowSelect(bpy.types.Operator):
 
         return {'FINISHED'}
 
+
 class ShapeKeyAlignByPrefix(bpy.types.Operator):
     bl_idname = 'shaku.align_by_prefix'
     bl_label  = 'Align by prefix'
@@ -37,7 +39,7 @@ class ShapeKeyAlignByPrefix(bpy.types.Operator):
         for key_name in [shape_key.name for shape_key in key_blocks]:
             prefix = re.split(r'\.|_', key_name, 1)[0] # <prefix>_<shape key name>
             # update value if prefix is new or contiguous
-            if not prefix in prefix_end.keys() \
+            if prefix not in prefix_end.keys() \
                or prefix == re.split(r'\.|_', key_blocks[key_blocks.find(key_name) - 1].name, 1)[0]:
                 prefix_end[prefix] = key_blocks.find(key_name)
 

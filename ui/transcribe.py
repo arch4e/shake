@@ -74,10 +74,11 @@ class TranscribePanel(BasePanel, bpy.types.Panel):
         btn = col.row(align=True)
         btn.operator('shaku.transcribe_shape_keys', icon='DUPLICATE', text='transcribe')
 
+
 def get_all_shape_key_name():
     shape_keys = []
     for _object in [obj for (_, obj) in bpy.data.objects.items() if obj.type == 'MESH']:
-        if not _object.data.shape_keys is None:
+        if _object.data.shape_keys is not None:
             shape_keys.extend(_object.data.shape_keys.key_blocks.keys())
 
     shape_keys = list(set(shape_keys))
