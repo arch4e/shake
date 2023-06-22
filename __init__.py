@@ -12,7 +12,7 @@ bl_info = {
     'name'    : 'ShaKU',
     'category': '3D View',
     'location': '',
-    'version' : (1,0,0),
+    'version' : (1,0,1),
     'blender' : (3,0,0),
     'author'  : 'arch4e'
 }
