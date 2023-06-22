@@ -5,6 +5,8 @@ def generate_mesh_prop(self, context):
     return items
 
 class TranscribeProps(bpy.types.PropertyGroup):
+    select_mode_all_sk: bpy.props.BoolProperty(default=False)
+
     source: bpy.props.EnumProperty(
         items = generate_mesh_prop
     )
