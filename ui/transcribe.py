@@ -11,16 +11,23 @@ class TranscribePanel(BasePanel, bpy.types.Panel):
     bl_options = {'HEADER_LAYOUT_EXPAND'}
 
     def draw(self, context):
-        shape_keys = bpy.data.objects[context.scene.shaku_transcribe.source].data.shape_keys
+        # Objects with names containing non-ASCII characters are garbled in EnumProperty
+        USING_SUPPORTED_LANG = not (
+            bpy.context.preferences.view.language != 'en_US' # noqa: W503
+            and (bpy.context.preferences.view.use_translate_new_dataname is True)
+        )
+
         col  = self.layout.column()
 
         # Mode Selector
-        col.prop(context.scene.shaku_transcribe, 'select_mode_all_sk', text='Select Mode: ALL Shape Keys')
-        col.label(text='!!! This option is high load !!!')
-        col.separator(factor=0.5)
+        if USING_SUPPORTED_LANG:
+            col.prop(context.scene.shaku_transcribe, 'source_mode_single_object', text='Source Mode: Single Object')
+            col.separator(factor=0.5)
+        else:
+            col.label(text='Non-ASCII name is not supported', icon='ERROR')
 
         # Source Object Selector
-        if not context.scene.shaku_transcribe.select_mode_all_sk:
+        if context.scene.shaku_transcribe.source_mode_single_object:
             col.label(text='src: Mesh Object', icon='OBJECT_DATA')
             col.prop(context.scene.shaku_transcribe, 'source', text='')
 
@@ -28,7 +35,19 @@ class TranscribePanel(BasePanel, bpy.types.Panel):
         col.separator(factor=0.5)
         col.label(text='tgt: Shape Keys', icon='SHAPEKEY_DATA')
         tbox = col.box().column(align=True)
-        if context.scene.shaku_transcribe.select_mode_all_sk:
+        if context.scene.shaku_transcribe.source_mode_single_object:
+            shape_keys = bpy.data.objects[context.scene.shaku_transcribe.source].data.shape_keys
+            if type(shape_keys) == bpy.types.Key:
+                for (shape_key_name, _) in shape_keys.key_blocks.items():
+                    row = tbox.row()
+                    row.alignment = 'LEFT'
+                    row.operator('shaku.select_shape_keys',
+                                 icon='CHECKBOX_HLT' if shape_key_name in selected_shape_keys else 'CHECKBOX_DEHLT',
+                                 text=f'{shape_key_name}',
+                                 emboss=False).shape_key_name = shape_key_name
+            else:
+                tbox.label(text='N/A')
+        else:
             shape_keys = get_all_shape_key_name()
             if len(shape_keys) <= 0:
                 tbox.label(text='N/A')
@@ -40,17 +59,6 @@ class TranscribePanel(BasePanel, bpy.types.Panel):
                                  icon='CHECKBOX_HLT' if shape_key_name in selected_shape_keys else 'CHECKBOX_DEHLT',
                                  text=f'{shape_key_name}',
                                  emboss=False).shape_key_name = shape_key_name
-        else:
-            if type(shape_keys) == bpy.types.Key:
-                for (shape_key_name, _) in shape_keys.key_blocks.items():
-                    row = tbox.row()
-                    row.alignment = 'LEFT'
-                    row.operator('shaku.select_shape_keys',
-                                 icon='CHECKBOX_HLT' if shape_key_name in selected_shape_keys else 'CHECKBOX_DEHLT',
-                                 text=f'{shape_key_name}',
-                                 emboss=False).shape_key_name = shape_key_name
-            else:
-                tbox.label(text='N/A')
 
         # Separator
         col.separator(factor=0.5)
