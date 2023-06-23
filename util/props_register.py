@@ -1,3 +1,4 @@
+# -*- coding: utf-8 -*-
 import bpy
 
 from ..property.transcribe import TranscribeProps

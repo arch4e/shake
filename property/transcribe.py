@@ -12,7 +12,7 @@ def generate_object_prop(self, context):
 
 
 class TranscribeProps(bpy.types.PropertyGroup):
-    select_mode_all_sk: bpy.props.BoolProperty(default=False)
+    source_mode_single_object: bpy.props.BoolProperty(default=False)
 
     source: bpy.props.EnumProperty(
         items=generate_object_prop
