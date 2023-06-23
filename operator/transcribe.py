@@ -50,7 +50,7 @@ class TranscribeShapeKeys(bpy.types.Operator):
 
                 # Exclude non-existent shapekeys
                 # >>> Switching objects after selecting a shapekey also transfers the shapekey of another object.
-                if not context.scene.shaku_transcribe.select_mode_all_sk:
+                if context.scene.shaku_transcribe.source_mode_single_object:
                     existing_shape_keys = bpy.data.objects[
                         context.scene.shaku_transcribe.source
                     ].data.shape_keys.key_blocks.keys()
