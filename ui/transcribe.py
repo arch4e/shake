@@ -69,8 +69,15 @@ class TranscribePanel(BasePanel, bpy.types.Panel):
         # Destination Object Selector
         col.separator(factor=0.5)
         col.label(text='dst: Mesh Objects', icon='OBJECT_DATA')
+        col.prop(context.scene.shaku_transcribe, 'filter_collection', text='Filter:')
         dbox = col.box().column(align=True)
-        for object_name in [obj.name for (_, obj) in bpy.data.objects.items() if obj.type == 'MESH']:
+        object_list = []
+        if context.scene.shaku_transcribe.filter_collection != 'ALL':
+            object_list = [obj.name for (_, obj) in bpy.data.collections[context.scene.shaku_transcribe.filter_collection].objects.items() if obj.type == 'MESH']
+        else:
+            object_list = [obj.name for (_, obj) in bpy.data.objects.items() if obj.type == 'MESH']
+
+        for object_name in object_list:
             row = dbox.row()
             row.alignment = 'LEFT'
             row.operator('shaku.select_destination_objects',
