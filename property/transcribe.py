@@ -4,7 +4,7 @@ import bpy
 
 def generate_collection_prop(self, context):
     try:
-        items = [(c, c, '') for c in context.scene.collection.children.keys()]
+        items = [(c, c, '') for c in bpy.data.collections.keys()]
         items.insert(0, ('ALL', 'ALL', ''))
         return items
     except Exception as e:
