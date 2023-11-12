@@ -2,9 +2,11 @@
 import bpy
 
 from .operator.context_menu_extention import ShaKe_OT_align_by_prefix, ShaKe_OT_move_shape_key_below_selected
+from .operator.selector import ShaKe_OT_select_shape_key
 from .operator.transcribe import ShaKe_OT_select_destination, ShaKe_OT_select_shape_keys, ShaKe_OT_transcribe_shape_keys
 from .property.transcribe import ShaKe_PG_transcribe
 from .ui.context_menu_extention import ShaKe_MT_move_shape_key_below_selected, ShaKe_MT_shape_keys_extended_menu
+from .ui.selector import ShaKe_PT_shape_keys_selector
 from .ui.transcribe import ShaKe_PT_transcribe
 from .util.props_register import register as props_register, unregister as props_unregister
 
@@ -19,14 +21,18 @@ bl_info = {
 }
 
 
+# Menus and Panels are displayed in the order of registration,
+# so they are not arranged alphabetically.
 classes = [
     ShaKe_MT_move_shape_key_below_selected,
     ShaKe_OT_align_by_prefix,
     ShaKe_OT_move_shape_key_below_selected,
     ShaKe_OT_select_destination,
+    ShaKe_OT_select_shape_key,
     ShaKe_OT_select_shape_keys,
     ShaKe_OT_transcribe_shape_keys,
     ShaKe_PG_transcribe,
+    ShaKe_PT_shape_keys_selector,
     ShaKe_PT_transcribe,
 ]
 
