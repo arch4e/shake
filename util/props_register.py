@@ -1,11 +1,11 @@
 # -*- coding: utf-8 -*-
 import bpy
 
-from ..property.transcribe import TranscribeProps
+from ..property.transcribe import ShaKe_PG_transcribe
 
 properties = {
     bpy.types.Scene: {
-        'shaku_transcribe': bpy.props.PointerProperty(type=TranscribeProps),
+        'shake_transcribe': bpy.props.PointerProperty(type=ShaKe_PG_transcribe),
     }
 }
 
