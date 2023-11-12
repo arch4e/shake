@@ -1,8 +1,10 @@
 # -*- coding: utf-8 -*-
 import bpy
 
+from .selector import selected_shape_keys
+
+
 destination_objects = []
-selected_shape_keys = []
 
 
 class ShaKe_OT_select_shape_keys(bpy.types.Operator):

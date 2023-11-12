@@ -4,22 +4,19 @@ import bpy
 from .common import BasePanel
 from ..operator.selector import selected_shape_keys
 
+
 class ShaKe_PT_shape_keys_selector(BasePanel, bpy.types.Panel):
     bl_idname = 'VIEW3D_PT_ShaKe_shape_keys_selector'
     bl_label  = 'Shape Keys Selector'
 
-
     @classmethod
     def poll(cls, context):
-        return context.object != None
-
+        return context.object
 
     def draw(self, context):
         # Objects with names containing non-ASCII characters are garbled in EnumProperty
-        USING_SUPPORTED_LANG = not (
-            bpy.context.preferences.view.language != 'en_US'
-            and (bpy.context.preferences.view.use_translate_new_dataname is True) # noqa: W503
-        )
+        USING_SUPPORTED_LANG = not (bpy.context.preferences.view.language != 'en_US'
+                                    and (bpy.context.preferences.view.use_translate_new_dataname is True)) # noqa: W293
 
         col = self.layout.column()
 
@@ -50,9 +47,9 @@ class ShaKe_PT_shape_keys_selector(BasePanel, bpy.types.Panel):
                 row = box.row()
                 row.alignment = 'LEFT'
                 row.operator('shake.select_shape_key',
-                                icon='CHECKBOX_HLT' if _shape_key in selected_shape_keys else 'CHECKBOX_DEHLT',
-                                text=f'{_shape_key}',
-                                emboss=False).shape_key_name = _shape_key
+                             icon='CHECKBOX_HLT' if _shape_key in selected_shape_keys else 'CHECKBOX_DEHLT',
+                             text=f'{_shape_key}',
+                             emboss=False).shape_key_name = _shape_key
         else:
             box.label(text='N/A')
 

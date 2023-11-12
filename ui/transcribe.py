@@ -2,7 +2,8 @@
 import bpy
 
 from .common import BasePanel
-from ..operator.transcribe import destination_objects, selected_shape_keys
+from .selector import draw_selected_shape_key_list
+from ..operator.transcribe import destination_objects
 
 
 class ShaKe_PT_transcribe(BasePanel, bpy.types.Panel):
@@ -11,54 +12,10 @@ class ShaKe_PT_transcribe(BasePanel, bpy.types.Panel):
     bl_options = {'HEADER_LAYOUT_EXPAND'}
 
     def draw(self, context):
-        # Objects with names containing non-ASCII characters are garbled in EnumProperty
-        USING_SUPPORTED_LANG = not (
-            bpy.context.preferences.view.language != 'en_US'
-            and (bpy.context.preferences.view.use_translate_new_dataname is True) # noqa: W503
-        )
+        col = self.layout.column()
 
-        col  = self.layout.column()
-
-        # Mode Selector
-        if USING_SUPPORTED_LANG:
-            col.prop(context.scene.shake_transcribe, 'source_mode_single_object', text='Source Mode: Single Object')
-            col.separator(factor=0.5)
-        else:
-            col.label(text='Non-ASCII name is not supported', icon='ERROR')
-
-        # Source Object Selector
-        if context.scene.shake_transcribe.source_mode_single_object:
-            col.label(text='src: Mesh Object', icon='OBJECT_DATA')
-            col.prop(context.scene.shake_transcribe, 'source', text='')
-
-        # Target Shape Key Selector
-        col.separator(factor=0.5)
-        col.label(text='tgt: Shape Keys', icon='SHAPEKEY_DATA')
-        tbox = col.box().column(align=True)
-        if context.scene.shake_transcribe.source_mode_single_object:
-            shape_keys = bpy.data.objects[context.scene.shake_transcribe.source].data.shape_keys
-            if type(shape_keys) == bpy.types.Key:
-                for (shape_key_name, _) in shape_keys.key_blocks.items():
-                    row = tbox.row()
-                    row.alignment = 'LEFT'
-                    row.operator('shake.select_shape_keys',
-                                 icon='CHECKBOX_HLT' if shape_key_name in selected_shape_keys else 'CHECKBOX_DEHLT',
-                                 text=f'{shape_key_name}',
-                                 emboss=False).shape_key_name = shape_key_name
-            else:
-                tbox.label(text='N/A')
-        else:
-            shape_keys = get_all_shape_key_name()
-            if len(shape_keys) <= 0:
-                tbox.label(text='N/A')
-            else:
-                for shape_key_name in shape_keys:
-                    row = tbox.row()
-                    row.alignment = 'LEFT'
-                    row.operator('shake.select_shape_keys',
-                                 icon='CHECKBOX_HLT' if shape_key_name in selected_shape_keys else 'CHECKBOX_DEHLT',
-                                 text=f'{shape_key_name}',
-                                 emboss=False).shape_key_name = shape_key_name
+        # Selected Shape Keys
+        draw_selected_shape_key_list(col)
 
         # Separator
         col.separator(factor=0.5)

@@ -3,6 +3,7 @@ import bpy
 
 selected_shape_keys = []
 
+
 class ShaKe_OT_select_shape_key(bpy.types.Operator):
     bl_idname = 'shake.select_shape_key'
     bl_label  = 'Select Shape Key'
