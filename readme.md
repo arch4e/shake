@@ -1,4 +1,4 @@
-# ShaKU
+# ShaKe
 
 Shape Keys Utility for Blender
 
