@@ -2,63 +2,21 @@
 import bpy
 
 from .common import BasePanel
-from ..operator.transcribe import destination_objects, selected_shape_keys
+from .selector import draw_selected_shape_key_list
+from ..operator.transcribe import destination_objects
 
 
-class TranscribePanel(BasePanel, bpy.types.Panel):
-    bl_idname  = 'VIEW3D_PT_shaku_transcribe'
+class ShaKe_PT_transcribe(BasePanel, bpy.types.Panel):
+    bl_idname  = 'VIEW3D_PT_shake_transcribe'
     bl_label   = 'Transcribe Shape Keys'
-    bl_options = {'HEADER_LAYOUT_EXPAND'}
+    bl_options = {'DEFAULT_CLOSED'}
 
     def draw(self, context):
-        # Objects with names containing non-ASCII characters are garbled in EnumProperty
-        USING_SUPPORTED_LANG = not (
-            bpy.context.preferences.view.language != 'en_US' # noqa: W503
-            and (bpy.context.preferences.view.use_translate_new_dataname is True)
-        )
+        col = self.layout.column()
+        col.enabled = context.object.mode != 'EDIT'
 
-        col  = self.layout.column()
-
-        # Mode Selector
-        if USING_SUPPORTED_LANG:
-            col.prop(context.scene.shaku_transcribe, 'source_mode_single_object', text='Source Mode: Single Object')
-            col.separator(factor=0.5)
-        else:
-            col.label(text='Non-ASCII name is not supported', icon='ERROR')
-
-        # Source Object Selector
-        if context.scene.shaku_transcribe.source_mode_single_object:
-            col.label(text='src: Mesh Object', icon='OBJECT_DATA')
-            col.prop(context.scene.shaku_transcribe, 'source', text='')
-
-        # Target Shape Key Selector
-        col.separator(factor=0.5)
-        col.label(text='tgt: Shape Keys', icon='SHAPEKEY_DATA')
-        tbox = col.box().column(align=True)
-        if context.scene.shaku_transcribe.source_mode_single_object:
-            shape_keys = bpy.data.objects[context.scene.shaku_transcribe.source].data.shape_keys
-            if type(shape_keys) == bpy.types.Key:
-                for (shape_key_name, _) in shape_keys.key_blocks.items():
-                    row = tbox.row()
-                    row.alignment = 'LEFT'
-                    row.operator('shaku.select_shape_keys',
-                                 icon='CHECKBOX_HLT' if shape_key_name in selected_shape_keys else 'CHECKBOX_DEHLT',
-                                 text=f'{shape_key_name}',
-                                 emboss=False).shape_key_name = shape_key_name
-            else:
-                tbox.label(text='N/A')
-        else:
-            shape_keys = get_all_shape_key_name()
-            if len(shape_keys) <= 0:
-                tbox.label(text='N/A')
-            else:
-                for shape_key_name in shape_keys:
-                    row = tbox.row()
-                    row.alignment = 'LEFT'
-                    row.operator('shaku.select_shape_keys',
-                                 icon='CHECKBOX_HLT' if shape_key_name in selected_shape_keys else 'CHECKBOX_DEHLT',
-                                 text=f'{shape_key_name}',
-                                 emboss=False).shape_key_name = shape_key_name
+        # Selected Shape Keys
+        draw_selected_shape_key_list(col)
 
         # Separator
         col.separator(factor=0.5)
@@ -69,18 +27,18 @@ class TranscribePanel(BasePanel, bpy.types.Panel):
         # Destination Object Selector
         col.separator(factor=0.5)
         col.label(text='dst: Mesh Objects', icon='OBJECT_DATA')
-        col.prop(context.scene.shaku_transcribe, 'filter_collection', text='Filter:')
+        col.prop(context.scene.shake_transcribe, 'filter_collection', text='Filter:')
         dbox = col.box().column(align=True)
         object_list = []
-        if context.scene.shaku_transcribe.filter_collection != 'ALL':
-            object_list = [obj.name for (_, obj) in bpy.data.collections[context.scene.shaku_transcribe.filter_collection].objects.items() if obj.type == 'MESH']
+        if context.scene.shake_transcribe.filter_collection != 'ALL':
+            object_list = [obj.name for (_, obj) in bpy.data.collections[context.scene.shake_transcribe.filter_collection].objects.items() if obj.type == 'MESH']
         else:
             object_list = [obj.name for (_, obj) in bpy.data.objects.items() if obj.type == 'MESH']
 
         for object_name in object_list:
             row = dbox.row()
             row.alignment = 'LEFT'
-            row.operator('shaku.select_destination_objects',
+            row.operator('shake.select_destination_objects',
                          icon='CHECKBOX_HLT' if object_name in destination_objects else 'CHECKBOX_DEHLT',
                          text=f'{object_name}',
                          emboss=False).object_name = object_name
@@ -88,7 +46,7 @@ class TranscribePanel(BasePanel, bpy.types.Panel):
         # Transcribe Button
         col.separator(factor=1.5)
         btn = col.row(align=True)
-        btn.operator('shaku.transcribe_shape_keys', icon='DUPLICATE', text='transcribe')
+        btn.operator('shake.transcribe_shape_keys', icon='DUPLICATE', text='transcribe')
 
 
 def get_all_shape_key_name():

@@ -1,12 +1,15 @@
 # -*- coding: utf-8 -*-
 import bpy
 
-from ..property.transcribe import TranscribeProps
+from ..property.order_management import ShaKe_PG_order_mgmt_prefix
+from ..property.transcribe import ShaKe_PG_transcribe
 
 properties = {
     bpy.types.Scene: {
-        'shaku_transcribe': bpy.props.PointerProperty(type=TranscribeProps),
-    }
+        'shake_order_mgmt_active_index': bpy.props.IntProperty(),
+        'shake_order_mgmt_prefix_list': bpy.props.CollectionProperty(type=ShaKe_PG_order_mgmt_prefix),
+        'shake_transcribe': bpy.props.PointerProperty(type=ShaKe_PG_transcribe),
+    },
 }
 
 

@@ -4,7 +4,7 @@ import bpy
 
 def generate_collection_prop(self, context):
     try:
-        items = [(c, c, '') for c in context.scene.collection.children.keys()]
+        items = [(c, c, '') for c in bpy.data.collections.keys()]
         items.insert(0, ('ALL', 'ALL', ''))
         return items
     except Exception as e:
@@ -21,7 +21,7 @@ def generate_object_prop(self, context):
         return []
 
 
-class TranscribeProps(bpy.types.PropertyGroup):
+class ShaKe_PG_transcribe(bpy.types.PropertyGroup):
     source_mode_single_object: bpy.props.BoolProperty(default=False)
 
     source: bpy.props.EnumProperty(

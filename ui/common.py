@@ -2,7 +2,7 @@
 class BasePanel(object):
     bl_space_type  = 'VIEW_3D'
     bl_region_type = 'UI'
-    bl_category    = 'ShaKU'
+    bl_category    = 'ShaKe'
 
     @classmethod
     def poll(cls, context):
