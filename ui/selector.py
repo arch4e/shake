@@ -8,6 +8,7 @@ from ..operator.selector import selected_shape_keys
 class ShaKe_PT_shape_keys_selector(BasePanel, bpy.types.Panel):
     bl_idname = 'VIEW3D_PT_ShaKe_shape_keys_selector'
     bl_label  = 'Shape Keys Selector'
+    bl_options = {'DEFAULT_CLOSED'}
 
     @classmethod
     def poll(cls, context):

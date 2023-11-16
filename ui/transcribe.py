@@ -9,7 +9,7 @@ from ..operator.transcribe import destination_objects
 class ShaKe_PT_transcribe(BasePanel, bpy.types.Panel):
     bl_idname  = 'VIEW3D_PT_shake_transcribe'
     bl_label   = 'Transcribe Shape Keys'
-    bl_options = {'HEADER_LAYOUT_EXPAND'}
+    bl_options = {'DEFAULT_CLOSED'}
 
     def draw(self, context):
         col = self.layout.column()
