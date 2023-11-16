@@ -1,12 +1,14 @@
 # -*- coding: utf-8 -*-
 import bpy
 
+from .selector import selected_shape_keys
+
+
 destination_objects = []
-selected_shape_keys = []
 
 
-class SelectShapeKeys(bpy.types.Operator):
-    bl_idname = 'shaku.select_shape_keys'
+class ShaKe_OT_select_shape_keys(bpy.types.Operator):
+    bl_idname = 'shake.select_shape_keys'
     bl_label  = 'Select Shape Keys'
 
     shape_key_name: bpy.props.StringProperty()
@@ -20,8 +22,8 @@ class SelectShapeKeys(bpy.types.Operator):
         return { 'FINISHED' }
 
 
-class SelectDestination(bpy.types.Operator):
-    bl_idname = 'shaku.select_destination_objects'
+class ShaKe_OT_select_destination(bpy.types.Operator):
+    bl_idname = 'shake.select_destination_objects'
     bl_label  = 'Select Destination'
 
     object_name: bpy.props.StringProperty()
@@ -35,8 +37,8 @@ class SelectDestination(bpy.types.Operator):
         return { 'FINISHED' }
 
 
-class TranscribeShapeKeys(bpy.types.Operator):
-    bl_idname = 'shaku.transcribe_shape_keys'
+class ShaKe_OT_transcribe_shape_keys(bpy.types.Operator):
+    bl_idname = 'shake.transcribe_shape_keys'
     bl_label  = 'Transcribe Selected Shape Keys to Other Objects'
 
     def execute(self, context):
@@ -50,9 +52,9 @@ class TranscribeShapeKeys(bpy.types.Operator):
 
                 # Exclude non-existent shapekeys
                 # >>> Switching objects after selecting a shapekey also transfers the shapekey of another object.
-                if context.scene.shaku_transcribe.source_mode_single_object:
+                if context.scene.shake_transcribe.source_mode_single_object:
                     existing_shape_keys = bpy.data.objects[
-                        context.scene.shaku_transcribe.source
+                        context.scene.shake_transcribe.source
                     ].data.shape_keys.key_blocks.keys()
                     target_shape_keys = list(
                         set(selected_shape_keys) & set(existing_shape_keys)
