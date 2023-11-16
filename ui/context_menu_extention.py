@@ -16,6 +16,9 @@ class ShaKe_MT_move_shape_key_below_selected(bpy.types.Menu):
 
 def ShaKe_MT_shape_keys_extended_menu(self, context):
     layout = self.layout
+
+    layout.enabled = context.object.mode != 'EDIT'
+
     layout.separator()
     layout.menu('OBJECT_MT_ShaKe_move_shapekey_below_selected', text='Move Shape Key')
     layout.operator('shake.align_by_prefix', text='Align by Prefix')

@@ -19,6 +19,7 @@ class ShaKe_PT_shape_keys_selector(BasePanel, bpy.types.Panel):
                                     and (bpy.context.preferences.view.use_translate_new_dataname is True)) # noqa: W293
 
         col = self.layout.column()
+        col.enabled = context.object.mode != 'EDIT'
 
         # Mode Selector
         if USING_SUPPORTED_LANG:

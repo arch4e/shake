@@ -13,6 +13,7 @@ class ShaKe_PT_transcribe(BasePanel, bpy.types.Panel):
 
     def draw(self, context):
         col = self.layout.column()
+        col.enabled = context.object.mode != 'EDIT'
 
         # Selected Shape Keys
         draw_selected_shape_key_list(col)
