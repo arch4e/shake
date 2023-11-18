@@ -52,7 +52,7 @@ class ShaKe_OT_rearrange_by_prefix_list(bpy.types.Operator):
             bpy.context.object.active_shape_key_index
         ]
         user_defined_prefix_list = context.scene.shake_order_mgmt_prefix_list.keys()
-        sorted_tail_index = 1 # Index 0 is 'Basic'
+        sorted_tail_index = 0
 
         for prefix in user_defined_prefix_list:
             prefix_included_shape_key_index = [index for index, name in enumerate(shape_keys) if re.match(rf'^{prefix}', name)]
@@ -94,8 +94,7 @@ class ShaKe_OT_sync_selected_obj_prefix_list(bpy.types.Operator):
 
         context.scene.shake_order_mgmt_prefix_list.clear()
         for prefix in obj_prefix_list:
-            if prefix != 'Basis':
-                context.scene.shake_order_mgmt_prefix_list.add().name = prefix
+            context.scene.shake_order_mgmt_prefix_list.add().name = prefix
 
         return { 'FINISHED' }
 
