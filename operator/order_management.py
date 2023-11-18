@@ -69,7 +69,6 @@ class ShaKe_OT_rearrange_by_prefix_list(bpy.types.Operator):
                     sorted_tail_index += 1
                 active_object_shape_keys = context.active_object.data.shape_keys.key_blocks.keys()
 
-
         bpy.context.object.active_shape_key_index = active_object_shape_keys.index(backup_active_shape_key_name)
 
         return { 'FINISHED' }
@@ -92,7 +91,7 @@ class ShaKe_OT_sync_selected_obj_prefix_list(bpy.types.Operator):
     bl_label  = 'Sync Shape Key Prefix'
 
     def execute(self, context):
-        obj_prefix_list = dict.fromkeys(map(lambda x: re.split('\_|\.', x)[0], context.active_object.data.shape_keys.key_blocks.keys()))
+        obj_prefix_list = dict.fromkeys(map(lambda x: re.split('\_|\.', x)[0], context.active_object.data.shape_keys.key_blocks.keys())) # noqa: W605
 
         context.scene.shake_order_mgmt_prefix_list.clear()
         for prefix in obj_prefix_list:
