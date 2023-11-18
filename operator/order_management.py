@@ -47,15 +47,17 @@ class ShaKe_OT_rearrange_by_prefix_list(bpy.types.Operator):
     bl_label  = ''
 
     def execute(self, context):
-        shape_keys = context.active_object.data.shape_keys.key_blocks.keys()
-        backup_active_shape_key_name = shape_keys[
+        active_object_shape_keys = context.active_object.data.shape_keys.key_blocks.keys()
+        backup_active_shape_key_name = active_object_shape_keys[
             bpy.context.object.active_shape_key_index
         ]
         user_defined_prefix_list = context.scene.shake_order_mgmt_prefix_list.keys()
-        sorted_tail_index = 1 # Index 0 is 'Basic'
+        sorted_tail_index = 0
 
-        for prefix in user_defined_prefix_list:
-            prefix_included_shape_key_index = [index for index, name in enumerate(shape_keys) if re.match(rf'^{prefix}', name)]
+        shape_keys_dict = generate_shape_keys_dict_with_longest_match()
+
+        for _prefix in user_defined_prefix_list:
+            prefix_included_shape_key_index = [active_object_shape_keys.index(x) for x in shape_keys_dict[_prefix]]
             for current_index in prefix_included_shape_key_index:
                 move_steps = current_index - sorted_tail_index
                 if move_steps >= 0:
@@ -65,10 +67,9 @@ class ShaKe_OT_rearrange_by_prefix_list(bpy.types.Operator):
                     # update tail index
                     # move_steps = 0 is in the correct position and does not need to be moved
                     sorted_tail_index += 1
-                shape_keys = context.active_object.data.shape_keys.key_blocks.keys()
+                active_object_shape_keys = context.active_object.data.shape_keys.key_blocks.keys()
 
-
-        bpy.context.object.active_shape_key_index = shape_keys.index(backup_active_shape_key_name)
+        bpy.context.object.active_shape_key_index = active_object_shape_keys.index(backup_active_shape_key_name)
 
         return { 'FINISHED' }
 
@@ -90,12 +91,24 @@ class ShaKe_OT_sync_selected_obj_prefix_list(bpy.types.Operator):
     bl_label  = 'Sync Shape Key Prefix'
 
     def execute(self, context):
-        obj_prefix_list = dict.fromkeys(map(lambda x: re.split('\_|\.', x)[0], context.active_object.data.shape_keys.key_blocks.keys()))
+        obj_prefix_list = dict.fromkeys(map(lambda x: re.split('\_|\.', x)[0], context.active_object.data.shape_keys.key_blocks.keys())) # noqa: W605
 
         context.scene.shake_order_mgmt_prefix_list.clear()
         for prefix in obj_prefix_list:
-            if prefix != 'Basis':
-                context.scene.shake_order_mgmt_prefix_list.add().name = prefix
+            context.scene.shake_order_mgmt_prefix_list.add().name = prefix
 
         return { 'FINISHED' }
 
+
+def generate_shape_keys_dict_with_longest_match():
+    active_object_shape_keys_list = bpy.context.active_object.data.shape_keys.key_blocks.keys()
+    user_defined_prefix_list      = bpy.context.scene.shake_order_mgmt_prefix_list.keys()
+
+    shape_keys_dict = {}
+    for _prefix in sorted(user_defined_prefix_list, key=len, reverse=True):
+        shape_keys_dict[_prefix] = []
+        for _shape_key in [x for x in active_object_shape_keys_list if re.match(rf'^{_prefix}', x)]:
+            shape_keys_dict[_prefix].append(_shape_key)
+            active_object_shape_keys_list.remove(_shape_key)
+
+    return shape_keys_dict
