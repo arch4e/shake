@@ -17,7 +17,7 @@ class ShaKe_PT_shape_keys_selector(BasePanel, bpy.types.Panel):
     def draw(self, context):
         # Objects with names containing non-ASCII characters are garbled in EnumProperty
         USING_SUPPORTED_LANG = not (bpy.context.preferences.view.language != 'en_US'
-                                    and (bpy.context.preferences.view.use_translate_new_dataname is True)) # noqa: W293
+                                    and (bpy.context.preferences.view.use_translate_new_dataname is True)) # noqa: W503
 
         col = self.layout.column()
         col.enabled = context.object.mode != 'EDIT'
