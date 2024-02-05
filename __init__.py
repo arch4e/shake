@@ -26,7 +26,7 @@ bl_info = {
     'name'    : 'ShaKe',
     'category': '3D View',
     'location': '',
-    'version' : (2,1,0),
+    'version' : (3,0,0),
     'blender' : (3,0,0),
     'author'  : 'arch4e'
 }
