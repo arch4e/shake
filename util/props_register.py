@@ -3,14 +3,16 @@ import bpy
 
 from ..property.order_management import ShaKe_PG_order_mgmt_prefix
 from ..property.create_shape_keys_from_csv import ShaKe_PG_create_shape_keys_from_csv
-from ..property.transcribe import ShaKe_PG_transcribe
+from ..property.perfect_sync_sk_manager import ShaKe_PG_perfect_sync_sk_list, ShaKe_PG_perfect_sync_sk_manager
 
 properties = {
     bpy.types.Scene: {
         'shake_order_mgmt_active_index': bpy.props.IntProperty(),
         'shake_order_mgmt_prefix_list': bpy.props.CollectionProperty(type=ShaKe_PG_order_mgmt_prefix),
         'shake_create_shape_keys_csv': bpy.props.PointerProperty(type=ShaKe_PG_create_shape_keys_from_csv),
-        'shake_transcribe': bpy.props.PointerProperty(type=ShaKe_PG_transcribe),
+        'shake_perfect_sync_sk_list': bpy.props.CollectionProperty(type=ShaKe_PG_perfect_sync_sk_list),
+        'shake_perfect_sync_sk_list_active_index': bpy.props.IntProperty(),
+        'shake_perfect_sync_sk_manager': bpy.props.PointerProperty(type=ShaKe_PG_perfect_sync_sk_manager),
     },
 }
 
