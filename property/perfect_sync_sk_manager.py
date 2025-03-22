@@ -9,5 +9,5 @@ class ShaKe_PG_perfect_sync_sk_list(bpy.types.PropertyGroup):
 
 
 class ShaKe_PG_perfect_sync_sk_manager(bpy.types.PropertyGroup):
-    checker_enabled: bpy.props.BoolProperty(default=False)
+    checker_enabled: bpy.props.BoolProperty(default=True)
 

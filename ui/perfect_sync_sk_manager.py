@@ -12,7 +12,7 @@ class ShaKe_PT_perfect_sync_sk_manager(BasePanel, bpy.types.Panel):
 
     @classmethod
     def poll(cls, context):
-        return context.object and context.object.data.shape_keys is not None
+        return context.object and hasattr(context.object.data, 'shape_keys')
 
     def draw(self, context):
         col = self.layout.column()
@@ -32,12 +32,13 @@ class ShaKe_PT_perfect_sync_sk_manager(BasePanel, bpy.types.Panel):
         col.prop(
             context.scene.shake_perfect_sync_sk_manager,
             'checker_enabled',
-            text='Enable/Disable (heavy)',
+            text='Enable/Disable',
             icon='CHECKBOX_HLT' if context.scene.shake_perfect_sync_sk_manager.checker_enabled else 'CHECKBOX_DEHLT',
         )
+
         if context.scene.shake_perfect_sync_sk_manager.checker_enabled:
             if len(context.scene.shake_perfect_sync_sk_list) != len(PERFECT_SYNC_SHAPE_KEYS):
-                col.operator('shake.init_perfect_sync_init', text='init')
+                col.operator('shake.init_perfect_sync', text='init')
 
             col.template_list(
                 'UI_UL_ShaKe_perfect_sync_sk_management',
@@ -69,8 +70,7 @@ def count_exist_shape_keys(context):
     key_blocks = context.active_object.data.shape_keys.key_blocks.keys()
     for key_name in key_blocks:
         match_count = len(list(filter(lambda x: re.fullmatch(rf'{key_name}', x, re.IGNORECASE) is not None, PERFECT_SYNC_SHAPE_KEYS)))
-        if match_count != 1:
-            print(match_count)
+
         if match_count > 0:
             pssk_count += 1
         else:
