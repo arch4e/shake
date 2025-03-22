@@ -11,7 +11,7 @@ from .operator.order_management import (
     ShaKe_OT_remove_prefix,
     ShaKe_OT_sync_selected_obj_prefix_list
 )
-from .operator.perfect_sync_sk_manager import ShaKe_OT_init_perfect_sync
+from .operator.perfect_sync_sk_manager import ShaKe_OT_init_perfect_sync, ShaKe_OT_add_perfect_sync_shape_key
 from .property.create_shape_keys_from_csv import ShaKe_PG_create_shape_keys_from_csv
 from .property.order_management import ShaKe_PG_order_mgmt_prefix
 from .property.perfect_sync_sk_manager import ShaKe_PG_perfect_sync_sk_list, ShaKe_PG_perfect_sync_sk_manager
@@ -36,6 +36,7 @@ bl_info = {
 # so they are not arranged alphabetically.
 classes = [
     ShaKe_MT_move_shape_key_below_selected,
+    ShaKe_OT_add_perfect_sync_shape_key,
     ShaKe_OT_add_prefix,
     ShaKe_OT_align_by_prefix,
     ShaKe_OT_create_shape_keys_from_csv,

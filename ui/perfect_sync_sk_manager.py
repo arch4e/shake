@@ -62,6 +62,8 @@ class UI_UL_ShaKe_perfect_sync_sk_management(bpy.types.UIList):
         # draw
         row = layout.row()
         row.label(text=f'{item.name}', icon='CHECKMARK' if match_count > 0 else 'NONE')
+        if match_count <= 0:
+            row.operator('shake.add_perfect_sync_shape_key', icon='ADD', text='').shape_key_name = item.name
 
 
 def count_exist_shape_keys(context):
